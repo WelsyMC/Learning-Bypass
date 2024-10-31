@@ -1,5 +1,4 @@
 
-const toaster = new Toaster();
 let lastUrl = location.href;
 
 const checkUrlChange = () => {
@@ -13,15 +12,15 @@ function handleUrlChange() {
     tryToStart();
 }
 
-function tryToStart(){
+function tryToStart() {
     document.addEventListener("keyup", (ev) => {
-        if(ev.key === "F9"){
-            if(document.getElementById("modal-change-time"))return;
+        if (ev.key === "F9") {
+            if (document.getElementById("modal-change-time")) return;
 
             const modal = document.createElement("div");
-            
+
             modal.id = "modal-change-time";
-    
+
             modal.innerHTML = `
                 <div class="modal-wrapper">
                     <p class="text-xl font-bold w-full text-center">Ajout de temps</p>
@@ -37,40 +36,50 @@ function tryToStart(){
             `;
             modal.querySelector("button").onclick = () => {
                 const toAdd = modal.querySelector("input").value;
-    
-                if(!toAdd){
+
+                if (!toAdd) {
                     return;
                 }
-    
-                if(isNaN(parseInt(toAdd))){
+
+                if (isNaN(parseInt(toAdd))) {
                     return;
                 }
-    
+
                 const number = parseInt(toAdd);
-                if(number < 0){
-                    toaster.warn("Rip Quentin <3", "Attention vous devez entrer un nombre supérieur à 0 (rip Quentin)");
+                if (number < 0) {
                     return;
                 }
-    
-                addTimeAndRefreshPage(number);
+
+                const regex = /module-page\/(\d+)\?sectionID=(\d+)&currentPathwayID=(\d+)/;
+                const matches = window.location.toString().match(regex);
+
+                if(!matches){
+                    alert("Vous devez être dans un module pour effectuer l'ajout d'heures.");
+                    return;
+                }
+
+                const moduleId = matches[1];
+                const sectionID = matches[2];
+                const currentPathwayID = matches[3];
+
+                console.log("moduleId", moduleId, "sectionID", sectionID, "currentPathwayID", currentPathwayID);
+                addTimeAndRefreshPage(number, 61839, currentPathwayID, sectionID, moduleId);
             }
             document.body.append(modal);
         }
     });
 }
 
-function addTimeAndRefreshPage(durationMinutes, activityID, learningPathwayID, learningPathwaySectionID, moduleID){
+function addTimeAndRefreshPage(durationMinutes, activityID, learningPathwayID, learningPathwaySectionID, moduleID) {
     const token = localStorage.getItem("token");
-    toaster.info("EFlex - Requête", `Initialisation de la requête. <br />Token: <b>${token.substring(0, 8)}</b>`);
-
     console.log("before date calculations")
     const endDate = new Date();
     const newDate = new Date(endDate);
     newDate.setMinutes(endDate.getMinutes() - durationMinutes);
-    
+
     console.log("startDate:", newDate.toLocaleString("fr-FR"));
     console.log("endDate:", endDate.toLocaleString("fr-FR"));
-    
+
 
     console.log("fetching");
     fetch("https://api.ops.eflexlanguages.com/api/save-draft", {
@@ -91,12 +100,12 @@ function addTimeAndRefreshPage(durationMinutes, activityID, learningPathwayID, l
         },
         method: "POST",
         "body": `{\"activityID\":${activityID},\"answers\":{},\"startTime\":\"${newDate.toISOString()}\",\"endTime\":\"${endDate.toISOString()}\",\"trainer\":null,\"trainerIDs\":null,\"timeSpent\":${durationMinutes * 60},\"learningPathwayID\":\"${learningPathwayID}\",\"learningPathwaySectionID\":\"${learningPathwaySectionID}\",\"moduleID\":\"${moduleID}\"}`
-    }).then(r => r.json()).then(r => {        
-        if(r.success){  
+    }).then(r => r.json()).then(r => {
+        if (r.success) {
             window.location.reload();
             return;
-        }else{
-            toaster.warn("Erreur durant la requête", JSON.stringify(r));
+        } else {
+            console.log(JSON.stringify(r));
         }
     });
 }

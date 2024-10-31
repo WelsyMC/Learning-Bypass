@@ -16,7 +16,7 @@
     "content_scripts": [
         {
             "matches": ["https://limayrac.new.eflexlanguages.com/*"],
-            "js": ["Vendor/tailwind-3.4.14.js", "Toast/Toaster.js", "init.js"],
+            "js": ["Vendor/tailwind-3.4.14.js", "init.js"],
             "css": ["Styles/main.css"]
 
         }
