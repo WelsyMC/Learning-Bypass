@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json.schemastore.org/chrome-manifest",
+    "name": "EFlemme - EFlex Cheat Code1",
+    "description": "Pourquoi EFlex quand on peut flex ?",
+    "manifest_version": 3,
+    "version": "1.0",
+    "permissions": [
+        "activeTab",
+        "browsingData",
+        "cookies",
+        "webNavigation",
+        "storage",
+        "tabs",
+        "contextMenus"
+    ],
+    "content_scripts": [
+        {
+            "matches": ["https://limayrac.new.eflexlanguages.com/*"],
+            "js": ["Vendor/tailwind-3.4.14.js", "Toast/Toaster.js", "init.js"],
+            "css": ["Styles/main.css"]
+
+        }
+    ]
+}
