@@ -70,7 +70,7 @@ function tryToStart() {
     });
 }
 
-function addTimeAndRefreshPage(durationMinutes, activityID, learningPathwayID, learningPathwaySectionID, moduleID) {
+function addTimeAndRefreshPage(durationMinutes) {
     const token = localStorage.getItem("token");
     console.log("before date calculations")
     const endDate = new Date();
@@ -99,7 +99,7 @@ function addTimeAndRefreshPage(durationMinutes, activityID, learningPathwayID, l
             "Referrer-Policy": "strict-origin-when-cross-origin"
         },
         method: "POST",
-        "body": `{\"activityID\":${activityID},\"answers\":{},\"startTime\":\"${newDate.toISOString()}\",\"endTime\":\"${endDate.toISOString()}\",\"trainer\":null,\"trainerIDs\":null,\"timeSpent\":${durationMinutes * 60},\"learningPathwayID\":\"${learningPathwayID}\",\"learningPathwaySectionID\":\"${learningPathwaySectionID}\",\"moduleID\":\"${moduleID}\"}`
+        "body": `{\"activityID\":64056,\"answers\":{},\"startTime\":\"${newDate.toISOString()}\",\"endTime\":\"${endDate.toISOString()}\",\"trainer\":null,\"trainerIDs\":null,\"timeSpent\":${durationMinutes * 60},\"learningPathwayID\":\"442\",\"learningPathwaySectionID\":\"42207\",\"moduleID\":\"22713\"}`
     }).then(r => r.json()).then(r => {
         if (r.success) {
             window.location.reload();
